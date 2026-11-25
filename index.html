@@ -165,12 +165,16 @@
         name: 'にこにこ',
         eyes: [[ [4, 7], [5, 7], [6, 6] ], [ [9, 6], [10, 7], [11, 7] ]],
         mouth: [[6, 9], [7, 9], [8, 9], [9, 9], [5, 10], [10, 10], [6, 11], [7, 11], [8, 11], [9, 11]],
+        openMouth: [[6, 9], [7, 9], [8, 9], [9, 9], [5, 10], [10, 10], [6, 11], [9, 11], [7, 12], [8, 12]],
+        mouthInner: [[7, 11], [8, 11]],
         cheeks: [[3, 9], [4, 10], [11, 10], [12, 9]]
       },
       excited: {
         name: 'わくわく',
         eyes: [[ [4, 6], [5, 6], [4, 7], [5, 7], [4, 8], [5, 8] ], [ [10, 6], [11, 6], [10, 7], [11, 7], [10, 8], [11, 8] ]],
         mouth: [[6, 9], [7, 9], [8, 9], [9, 9], [6, 10], [7, 10], [8, 10], [9, 10], [7, 11], [8, 11]],
+        openMouth: [[6, 9], [7, 9], [8, 9], [9, 9], [5, 10], [10, 10], [5, 11], [10, 11], [6, 12], [7, 12], [8, 12], [9, 12]],
+        mouthInner: [[7, 11], [8, 11]],
         cheeks: [[3, 9], [4, 10], [11, 10], [12, 9]],
         sparkles: [[2, 4], [13, 4], [2, 5], [13, 5]]
       },
@@ -179,19 +183,25 @@
         eyes: [[ [4, 7], [5, 7], [4, 8], [5, 8] ], [ [10, 7], [11, 7], [10, 8], [11, 8] ]],
         brows: [[4, 5], [5, 6], [10, 6], [11, 5]],
         mouth: [[6, 10], [7, 9], [8, 9], [9, 10]],
+        openMouth: [[7, 9], [8, 9], [6, 10], [9, 10], [7, 11], [8, 11]],
+        mouthInner: [[7, 10], [8, 10]],
         tear: [[12, 8], [12, 9], [11, 10]]
       },
       surprised: {
         name: 'びっくり',
         eyes: [[ [4, 6], [5, 6], [4, 7], [5, 7], [4, 8], [5, 8] ], [ [10, 6], [11, 6], [10, 7], [11, 7], [10, 8], [11, 8] ]],
         brows: [[4, 5], [5, 5], [10, 5], [11, 5]],
-        mouth: [[7, 9], [8, 9], [6, 10], [9, 10], [6, 11], [9, 11], [7, 12], [8, 12]]
+        mouth: [[7, 9], [8, 9], [6, 10], [9, 10], [6, 11], [9, 11], [7, 12], [8, 12]],
+        openMouth: [[7, 9], [8, 9], [6, 10], [9, 10], [6, 11], [9, 11], [7, 12], [8, 12], [7, 13], [8, 13]],
+        mouthInner: [[7, 10], [8, 10], [7, 11], [8, 11]]
       },
       sleepy: {
         name: 'ねむねむ',
         eyes: [[ [4, 7], [5, 7], [6, 7] ], [ [9, 7], [10, 7], [11, 7] ]],
         brows: [[4, 6], [5, 6], [10, 6], [11, 6]],
         mouth: [[7, 10], [8, 10]],
+        openMouth: [[7, 10], [8, 10], [6, 11], [9, 11], [7, 12], [8, 12]],
+        mouthInner: [[7, 11], [8, 11]],
         zzz: [[12, 4], [13, 3], [14, 2]]
       }
     };
@@ -201,19 +211,24 @@
       outline: '#593e61',
       cheek: '#f28791',
       tear: '#63a9ef',
-      sparkle: '#f2a83b'
+      sparkle: '#f2a83b',
+      mouthInner: '#ee8b88'
     };
     const canvas = document.querySelector('#face');
     const context = canvas.getContext('2d');
     const buttons = [...document.querySelectorAll('.expression-button')];
     const status = document.querySelector('#status');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let selectedExpression = 'happy';
+    let isMouthOpen = false;
+    let talkingTimer;
 
     function paintPixels(points, color) {
       context.fillStyle = color;
       points.forEach(([x, y]) => context.fillRect(x, y, 1, 1));
     }
 
-    function drawFace(expressionKey) {
+    function drawFace(expressionKey, mouthOpen = false) {
       const expression = expressions[expressionKey];
       context.clearRect(0, 0, 16, 16);
       faceShape.forEach((row, y) => {
@@ -227,21 +242,37 @@
       expression.cheeks && paintPixels(expression.cheeks, colors.cheek);
       expression.eyes.forEach((eye) => paintPixels(eye, colors.outline));
       expression.brows && paintPixels(expression.brows, colors.outline);
-      paintPixels(expression.mouth, colors.outline);
+      paintPixels(mouthOpen ? expression.openMouth : expression.mouth, colors.outline);
+      mouthOpen && expression.mouthInner && paintPixels(expression.mouthInner, colors.mouthInner);
       expression.tear && paintPixels(expression.tear, colors.tear);
       expression.sparkles && paintPixels(expression.sparkles, colors.sparkle);
       expression.zzz && paintPixels(expression.zzz, colors.tear);
       canvas.setAttribute('aria-label', `${expression.name}の16×16ドット絵`);
-      status.textContent = `${expression.name} を選択中`;
-      buttons.forEach((button) => {
-        button.setAttribute('aria-pressed', String(button.dataset.expression === expressionKey));
-      });
+    }
+
+    function startTalking() {
+      window.clearInterval(talkingTimer);
+      isMouthOpen = false;
+      drawFace(selectedExpression);
+      if (reducedMotion.matches) return;
+      talkingTimer = window.setInterval(() => {
+        isMouthOpen = !isMouthOpen;
+        drawFace(selectedExpression, isMouthOpen);
+      }, 360);
     }
 
     buttons.forEach((button) => {
-      button.addEventListener('click', () => drawFace(button.dataset.expression));
+      button.addEventListener('click', () => {
+        selectedExpression = button.dataset.expression;
+        status.textContent = `${expressions[selectedExpression].name} を選択中`;
+        buttons.forEach((item) => {
+          item.setAttribute('aria-pressed', String(item === button));
+        });
+        startTalking();
+      });
     });
-    drawFace('happy');
+    reducedMotion.addEventListener('change', startTalking);
+    startTalking();
   </script>
 </body>
 </html>
