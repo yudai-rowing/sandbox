@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101322">
+  <title>ビンゴ抽選会</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #101322;
+      color: #f7f7ff;
+      font-synthesis: none;
+    }
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 18px 48px;
+      background: radial-gradient(ellipse at 50% 0%, #272957 0, #101322 55%);
+    }
+    main { width: min(100%, 760px); margin: 0 auto; text-align: center; }
+    .eyebrow { color: #a9a9d2; font-size: .78rem; font-weight: 800; letter-spacing: .24em; }
+    h1 { margin: 8px 0 4px; font-size: clamp(2rem, 7vw, 3.4rem); letter-spacing: .04em; }
+    .subtitle { margin: 0; color: #b8bad0; }
+    .stage {
+      position: relative;
+      display: grid;
+      min-height: 310px;
+      place-items: center;
+      margin: 34px 0 22px;
+      overflow: hidden;
+      border: 1px solid #ffffff20;
+      border-radius: 28px;
+      background: linear-gradient(145deg, #1d2036, #17192a);
+      box-shadow: 0 24px 70px #0005, inset 0 1px #ffffff12;
+    }
+    .stage::before, .stage::after {
+      position: absolute;
+      width: 250px;
+      height: 250px;
+      border: 1px solid #ffffff0d;
+      border-radius: 50%;
+      content: "";
+    }
+    .stage::after { width: 330px; height: 330px; }
+    .ball {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      width: clamp(160px, 42vw, 220px);
+      aspect-ratio: 1;
+      place-content: center;
+      border: 8px solid #ffffffbd;
+      border-radius: 50%;
+      background: radial-gradient(circle at 34% 26%, #fff 0 5%, var(--ball) 36%, color-mix(in srgb, var(--ball), #111 23%) 100%);
+      box-shadow: 0 14px 35px #0007, inset -12px -18px 28px #0002, inset 8px 9px 22px #ffffff85;
+      color: white;
+      text-shadow: 0 3px 8px #0005;
+      transform: scale(.92);
+      transition: transform .25s ease;
+    }
+    .ball.has-number { transform: scale(1); }
+    .ball.pop { animation: pop .62s cubic-bezier(.18,.8,.25,1.3); }
+    .letter { font-size: 1.65rem; font-weight: 900; line-height: 1; }
+    .number { font-size: 4.5rem; font-weight: 900; line-height: 1.02; }
+    .placeholder { color: #888ba8; font-size: 1.15rem; font-weight: 700; }
+    @keyframes pop {
+      0% { transform: scale(.3) rotate(-24deg); opacity: .2; }
+      65% { transform: scale(1.12) rotate(5deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0); }
+    }
+    .draw-button {
+      min-width: 220px;
+      min-height: 58px;
+      padding: 12px 30px;
+      border: 0;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #9e74ff, #7049eb);
+      box-shadow: 0 9px 24px #7049eb55;
+      color: white;
+      font: inherit;
+      font-size: 1.15rem;
+      font-weight: 850;
+      cursor: pointer;
+      transition: transform .15s, filter .15s;
+    }
+    .draw-button:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.12); }
+    .draw-button:active:not(:disabled) { transform: translateY(1px); }
+    .draw-button:focus-visible, .reset-button:focus-visible { outline: 3px solid white; outline-offset: 4px; }
+    .draw-button:disabled { cursor: default; opacity: .6; }
+    .status { min-height: 26px; margin: 14px 0 30px; color: #c9c9df; }
+    .history-panel {
+      padding: 22px;
+      border: 1px solid #ffffff18;
+      border-radius: 22px;
+      background: #1b1e30cc;
+      text-align: left;
+    }
+    .history-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    h2 { margin: 0; font-size: 1.1rem; }
+    .counter { color: #aaaec7; font-size: .9rem; font-variant-numeric: tabular-nums; }
+    .reset-button {
+      padding: 7px 12px;
+      border: 1px solid #ffffff2c;
+      border-radius: 10px;
+      background: transparent;
+      color: #d3d4e5;
+      font: inherit;
+      font-size: .83rem;
+      cursor: pointer;
+    }
+    .history { display: flex; flex-wrap: wrap; gap: 9px; min-height: 38px; margin-top: 18px; }
+    .chip {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--ball);
+      box-shadow: inset 0 -4px 8px #0002;
+      color: white;
+      font-size: .76rem;
+      font-weight: 850;
+      animation: chip-in .3s ease both;
+    }
+    @keyframes chip-in { from { opacity: 0; transform: scale(.6); } to { opacity: 1; transform: scale(1); } }
+    .empty-history { align-self: center; color: #8589a4; font-size: .9rem; }
+    footer { margin-top: 22px; color: #777b96; font-size: .82rem; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">LET'S PLAY TOGETHER</p>
+    <h1>ビンゴ抽選会</h1>
+    <p class="subtitle">ボタンを押して、次の番号を引こう！</p>
+
+    <section class="stage" aria-label="抽選結果">
+      <div class="ball" id="ball" aria-live="polite" aria-atomic="true">
+        <span class="placeholder" id="placeholder">準備はいい？</span>
+      </div>
+    </section>
+
+    <button class="draw-button" id="draw" type="button">🎱 抽選する</button>
+    <p class="status" id="status" aria-live="polite">1〜75の番号が、重複なしで出ます。</p>
+
+    <section class="history-panel" aria-labelledby="history-title">
+      <div class="history-heading">
+        <h2 id="history-title">出た番号</h2>
+        <span class="counter" id="counter">0 / 75</span>
+        <button class="reset-button" id="reset" type="button">最初から</button>
+      </div>
+      <div class="history" id="history" aria-label="これまでに出た番号">
+        <span class="empty-history" id="empty">番号はまだありません</span>
+      </div>
+    </section>
+    <footer>番号は1〜75からランダムに選ばれます</footer>
+  </main>
+
+  <script>
+    const colors = ['#fa547c', '#5686ff', '#17b89b', '#a16bfa', '#f4a640'];
+    const letters = ['B', 'I', 'N', 'G', 'O'];
+    let numbers = [];
+    let drawn = [];
+
+    const ball = document.querySelector('#ball');
+    const drawButton = document.querySelector('#draw');
+    const status = document.querySelector('#status');
+    const history = document.querySelector('#history');
+    const counter = document.querySelector('#counter');
+
+    function updateCounter() {
+      counter.textContent = `${drawn.length} / 75`;
+    }
+
+    function drawNumber() {
+      if (drawButton.disabled || numbers.length === 0) return;
+      drawButton.disabled = true;
+      const number = numbers.pop();
+      const column = Math.min(4, Math.floor((number - 1) / 15));
+      const letter = letters[column];
+      const color = colors[column];
+
+      ball.style.setProperty('--ball', color);
+      ball.innerHTML = `<span class="letter">${letter}</span><span class="number">${number}</span>`;
+      ball.classList.add('has-number');
+      ball.classList.remove('pop');
+      void ball.offsetWidth;
+      ball.classList.add('pop');
+      status.textContent = `${letter}の${number}番！`;
+
+      const chip = document.createElement('span');
+      chip.className = 'chip';
+      chip.style.setProperty('--ball', color);
+      chip.textContent = `${letter}${number}`;
+      chip.setAttribute('aria-label', `${letter}の${number}番`);
+      history.querySelector('#empty')?.remove();
+      history.prepend(chip);
+      drawn.push(number);
+      updateCounter();
+
+      window.setTimeout(() => {
+        drawButton.disabled = false;
+        if (numbers.length === 0) {
+          drawButton.disabled = true;
+          status.textContent = '全75球が出ました！おつかれさまでした 🎉';
+        }
+      }, 650);
+    }
+
+    function resetGame() {
+      numbers = Array.from({ length: 75 }, (_, index) => index + 1);
+      for (let i = numbers.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+      }
+      drawn = [];
+      ball.className = 'ball';
+      ball.style.removeProperty('--ball');
+      ball.innerHTML = '<span class="placeholder" id="placeholder">準備はいい？</span>';
+      history.innerHTML = '<span class="empty-history" id="empty">番号はまだありません</span>';
+      drawButton.disabled = false;
+      status.textContent = '1〜75の番号が、重複なしで出ます。';
+      updateCounter();
+    }
+
+    drawButton.addEventListener('click', drawNumber);
+    document.querySelector('#reset').addEventListener('click', resetGame);
+    resetGame();
+  </script>
+</body>
+</html>
