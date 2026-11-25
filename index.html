@@ -143,76 +143,87 @@
 
   <script>
     const faceShape = [
-      '......ssss......',
-      '....ssssssss....',
-      '...ssssssssss...',
-      '..ssssssssssss..',
-      '.ssssssssssssss.',
-      '.ssssssssssssss.',
-      '.ssssssssssssss.',
-      '.ssssssssssssss.',
-      '.ssssssssssssss.',
-      '.ssssssssssssss.',
-      '..ssssssssssss..',
-      '..ssssssssssss..',
-      '...ssssssssss...',
-      '....ssssssss....',
-      '......ssss......',
+      '................',
+      '.....oooooo.....',
+      '...oohhhhffoo...',
+      '..ohhhhhfffffo..',
+      '.ohhhhffffffffo.',
+      '.ohhhfffffffffo.',
+      '.ohhffffffffffo.',
+      '.ohffffffffffso.',
+      '.offfffffffffso.',
+      '.offfffffffffso.',
+      '.osfffffffffsso.',
+      '..osfffffffsso..',
+      '...osfffffsso...',
+      '....oossssoo....',
+      '......oooo......',
       '................'
     ];
     const expressions = {
       happy: {
         name: 'にこにこ',
-        eyes: [[ [4, 7], [5, 7], [6, 6] ], [ [9, 6], [10, 7], [11, 7] ]],
-        mouth: [[6, 9], [7, 9], [8, 9], [9, 9], [5, 10], [10, 10], [6, 11], [7, 11], [8, 11], [9, 11]],
-        openMouth: [[6, 9], [7, 9], [8, 9], [9, 9], [5, 10], [10, 10], [6, 11], [9, 11], [7, 12], [8, 12]],
-        mouthInner: [[7, 11], [8, 11]],
-        cheeks: [[3, 9], [4, 10], [11, 10], [12, 9]]
+        brows: [[4, 5], [5, 4], [10, 4], [11, 5]],
+        eyes: [[4, 7], [5, 6], [6, 7], [9, 7], [10, 6], [11, 7]],
+        mouth: [[5, 10], [6, 11], [7, 11], [8, 11], [9, 11], [10, 10]],
+        openMouth: [[5, 10], [6, 10], [7, 10], [8, 10], [9, 10], [10, 10], [6, 11], [7, 11], [8, 11], [9, 11], [7, 12], [8, 12]],
+        tongue: [[7, 11], [8, 11]],
+        cheeks: [[3, 9], [4, 9], [11, 9], [12, 9]]
       },
       excited: {
         name: 'わくわく',
-        eyes: [[ [4, 6], [5, 6], [4, 7], [5, 7], [4, 8], [5, 8] ], [ [10, 6], [11, 6], [10, 7], [11, 7], [10, 8], [11, 8] ]],
-        mouth: [[6, 9], [7, 9], [8, 9], [9, 9], [6, 10], [7, 10], [8, 10], [9, 10], [7, 11], [8, 11]],
-        openMouth: [[6, 9], [7, 9], [8, 9], [9, 9], [5, 10], [10, 10], [5, 11], [10, 11], [6, 12], [7, 12], [8, 12], [9, 12]],
-        mouthInner: [[7, 11], [8, 11]],
-        cheeks: [[3, 9], [4, 10], [11, 10], [12, 9]],
-        sparkles: [[2, 4], [13, 4], [2, 5], [13, 5]]
+        brows: [[4, 4], [5, 4], [10, 4], [11, 4]],
+        eyes: [[5, 5], [4, 6], [5, 6], [6, 6], [5, 7], [10, 5], [9, 6], [10, 6], [11, 6], [10, 7]],
+        eyeShine: [[5, 6], [10, 6]],
+        blink: [[4, 7], [5, 7], [6, 7], [9, 7], [10, 7], [11, 7]],
+        mouth: [[5, 10], [6, 11], [7, 11], [8, 11], [9, 11], [10, 10]],
+        openMouth: [[5, 10], [6, 10], [7, 10], [8, 10], [9, 10], [10, 10], [6, 11], [7, 11], [8, 11], [9, 11], [6, 12], [7, 12], [8, 12], [9, 12]],
+        tongue: [[7, 12], [8, 12]],
+        cheeks: [[3, 9], [4, 9], [11, 9], [12, 9]],
+        sparkles: [[2, 3], [13, 3]]
       },
       sad: {
         name: 'かなしい',
-        eyes: [[ [4, 7], [5, 7], [4, 8], [5, 8] ], [ [10, 7], [11, 7], [10, 8], [11, 8] ]],
-        brows: [[4, 5], [5, 6], [10, 6], [11, 5]],
-        mouth: [[6, 10], [7, 9], [8, 9], [9, 10]],
-        openMouth: [[7, 9], [8, 9], [6, 10], [9, 10], [7, 11], [8, 11]],
-        mouthInner: [[7, 10], [8, 10]],
+        brows: [[4, 5], [5, 5], [6, 4], [9, 4], [10, 5], [11, 5]],
+        eyes: [[4, 7], [5, 7], [4, 8], [5, 8], [10, 7], [11, 7], [10, 8], [11, 8]],
+        blink: [[4, 8], [5, 8], [6, 7], [9, 7], [10, 8], [11, 8]],
+        mouth: [[6, 11], [7, 10], [8, 10], [9, 11]],
+        openMouth: [[7, 10], [8, 10], [6, 11], [7, 11], [8, 11], [9, 11], [7, 12], [8, 12]],
+        tongue: [[7, 11], [8, 11]],
         tear: [[12, 8], [12, 9], [11, 10]]
       },
       surprised: {
         name: 'びっくり',
-        eyes: [[ [4, 6], [5, 6], [4, 7], [5, 7], [4, 8], [5, 8] ], [ [10, 6], [11, 6], [10, 7], [11, 7], [10, 8], [11, 8] ]],
-        brows: [[4, 5], [5, 5], [10, 5], [11, 5]],
-        mouth: [[7, 9], [8, 9], [6, 10], [9, 10], [6, 11], [9, 11], [7, 12], [8, 12]],
-        openMouth: [[7, 9], [8, 9], [6, 10], [9, 10], [6, 11], [9, 11], [7, 12], [8, 12], [7, 13], [8, 13]],
-        mouthInner: [[7, 10], [8, 10], [7, 11], [8, 11]]
+        brows: [[4, 4], [5, 3], [6, 4], [9, 4], [10, 3], [11, 4]],
+        eyes: [[4, 6], [5, 6], [4, 7], [5, 7], [4, 8], [5, 8], [10, 6], [11, 6], [10, 7], [11, 7], [10, 8], [11, 8]],
+        eyeShine: [[4, 6], [10, 6]],
+        blink: [[4, 7], [5, 7], [6, 7], [9, 7], [10, 7], [11, 7]],
+        mouth: [[7, 10], [8, 10], [7, 11], [8, 11]],
+        openMouth: [[7, 9], [8, 9], [6, 10], [7, 10], [8, 10], [9, 10], [6, 11], [7, 11], [8, 11], [9, 11], [7, 12], [8, 12]],
+        tongue: [[7, 11], [8, 11]]
       },
       sleepy: {
         name: 'ねむねむ',
-        eyes: [[ [4, 7], [5, 7], [6, 7] ], [ [9, 7], [10, 7], [11, 7] ]],
-        brows: [[4, 6], [5, 6], [10, 6], [11, 6]],
+        brows: [[4, 5], [5, 5], [10, 5], [11, 5]],
+        eyes: [[4, 7], [5, 7], [6, 7], [5, 8], [9, 7], [10, 7], [11, 7], [10, 8]],
         mouth: [[7, 10], [8, 10]],
-        openMouth: [[7, 10], [8, 10], [6, 11], [9, 11], [7, 12], [8, 12]],
-        mouthInner: [[7, 11], [8, 11]],
-        zzz: [[12, 4], [13, 3], [14, 2]]
+        openMouth: [[7, 10], [8, 10], [7, 11], [8, 11], [7, 12], [8, 12]],
+        tongue: [[8, 11]],
+        cheeks: [[3, 9], [12, 9]],
+        zzz: [[12, 3], [13, 3], [12, 4], [13, 5], [12, 5]]
       }
     };
     const colors = {
-      skin: '#ffc879',
-      highlight: '#ffe2a8',
-      outline: '#593e61',
-      cheek: '#f28791',
-      tear: '#63a9ef',
-      sparkle: '#f2a83b',
-      mouthInner: '#ee8b88'
+      o: '#a35f48',
+      f: '#ffd17f',
+      h: '#ffebba',
+      s: '#edaa6c',
+      ink: '#633f4a',
+      cheek: '#f29487',
+      tear: '#6aaee3',
+      shine: '#fff7df',
+      tongue: '#f48e92',
+      sparkle: '#efa755'
     };
     const canvas = document.querySelector('#face');
     const context = canvas.getContext('2d');
@@ -220,7 +231,7 @@
     const status = document.querySelector('#status');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let selectedExpression = 'happy';
-    let isMouthOpen = false;
+    let animationFrame = 0;
     let talkingTimer;
 
     function paintPixels(points, color) {
@@ -228,36 +239,36 @@
       points.forEach(([x, y]) => context.fillRect(x, y, 1, 1));
     }
 
-    function drawFace(expressionKey, mouthOpen = false) {
+    function drawFace(expressionKey, mouthOpen = false, blinking = false) {
       const expression = expressions[expressionKey];
       context.clearRect(0, 0, 16, 16);
       faceShape.forEach((row, y) => {
         [...row].forEach((pixel, x) => {
-          if (pixel === 's') {
-            context.fillStyle = x < 5 && y < 8 ? colors.highlight : colors.skin;
+          if (pixel !== '.') {
+            context.fillStyle = colors[pixel];
             context.fillRect(x, y, 1, 1);
           }
         });
       });
       expression.cheeks && paintPixels(expression.cheeks, colors.cheek);
-      expression.eyes.forEach((eye) => paintPixels(eye, colors.outline));
-      expression.brows && paintPixels(expression.brows, colors.outline);
-      paintPixels(mouthOpen ? expression.openMouth : expression.mouth, colors.outline);
-      mouthOpen && expression.mouthInner && paintPixels(expression.mouthInner, colors.mouthInner);
+      expression.brows && paintPixels(expression.brows, colors.ink);
+      paintPixels(blinking && expression.blink ? expression.blink : expression.eyes, colors.ink);
+      if (!blinking && expression.eyeShine) paintPixels(expression.eyeShine, colors.shine);
+      paintPixels(mouthOpen ? expression.openMouth : expression.mouth, colors.ink);
+      if (mouthOpen) paintPixels(expression.tongue, colors.tongue);
       expression.tear && paintPixels(expression.tear, colors.tear);
       expression.sparkles && paintPixels(expression.sparkles, colors.sparkle);
       expression.zzz && paintPixels(expression.zzz, colors.tear);
-      canvas.setAttribute('aria-label', `${expression.name}の16×16ドット絵`);
     }
 
     function startTalking() {
       window.clearInterval(talkingTimer);
-      isMouthOpen = false;
+      animationFrame = 0;
       drawFace(selectedExpression);
       if (reducedMotion.matches) return;
       talkingTimer = window.setInterval(() => {
-        isMouthOpen = !isMouthOpen;
-        drawFace(selectedExpression, isMouthOpen);
+        animationFrame += 1;
+        drawFace(selectedExpression, animationFrame % 2 === 1, animationFrame % 9 === 8);
       }, 360);
     }
 
@@ -265,6 +276,7 @@
       button.addEventListener('click', () => {
         selectedExpression = button.dataset.expression;
         status.textContent = `${expressions[selectedExpression].name} を選択中`;
+        canvas.setAttribute('aria-label', `${expressions[selectedExpression].name}の16×16ドット絵`);
         buttons.forEach((item) => {
           item.setAttribute('aria-pressed', String(item === button));
         });
