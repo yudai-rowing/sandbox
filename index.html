@@ -3,131 +3,115 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#101322">
-  <title>ビンゴ抽選会</title>
+  <meta name="theme-color" content="#f6f1ff">
+  <title>ピクセル気分メーカー</title>
   <style>
     :root {
-      color-scheme: dark;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #101322;
-      color: #f7f7ff;
+      color-scheme: light;
+      font-family: "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif;
+      background: #f6f1ff;
+      color: #30284a;
       font-synthesis: none;
     }
     * { box-sizing: border-box; }
     body {
+      display: grid;
       min-height: 100vh;
       margin: 0;
-      padding: 32px 18px 48px;
-      background: radial-gradient(ellipse at 50% 0%, #272957 0, #101322 55%);
-    }
-    main { width: min(100%, 760px); margin: 0 auto; text-align: center; }
-    .eyebrow { color: #a9a9d2; font-size: .78rem; font-weight: 800; letter-spacing: .24em; }
-    h1 { margin: 8px 0 4px; font-size: clamp(2rem, 7vw, 3.4rem); letter-spacing: .04em; }
-    .subtitle { margin: 0; color: #b8bad0; }
-    .stage {
-      position: relative;
-      display: grid;
-      min-height: 310px;
+      padding: 32px 18px;
       place-items: center;
-      margin: 34px 0 22px;
+      background:
+        radial-gradient(ellipse at 10% 12%, #ffe1d8 0, transparent 30%),
+        radial-gradient(ellipse at 90% 86%, #dcd7ff 0, transparent 34%),
+        #f6f1ff;
+    }
+    main {
+      width: min(100%, 680px);
+      padding: clamp(24px, 6vw, 48px);
+      border: 2px solid #fff;
+      border-radius: 32px;
+      background: #fffdfb;
+      box-shadow: 0 24px 70px #62518d20, 0 3px 0 #e9e1fa;
+      text-align: center;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      color: #806bb1;
+      font-size: .75rem;
+      font-weight: 900;
+      letter-spacing: .16em;
+    }
+    .eyebrow::before, .eyebrow::after { width: 18px; height: 2px; background: #c7b9ea; content: ""; }
+    h1 { margin: 10px 0 7px; font-size: clamp(1.8rem, 7vw, 2.8rem); letter-spacing: .03em; }
+    .subtitle { margin: 0; color: #827b94; font-size: .96rem; }
+    .pixel-stage {
+      display: grid;
+      min-height: 330px;
+      margin: 28px 0 20px;
+      place-items: center;
       overflow: hidden;
-      border: 1px solid #ffffff20;
-      border-radius: 28px;
-      background: linear-gradient(145deg, #1d2036, #17192a);
-      box-shadow: 0 24px 70px #0005, inset 0 1px #ffffff12;
+      border: 1px solid #eee8f8;
+      border-radius: 24px;
+      background: linear-gradient(145deg, #fcf9ff, #f8f3ff);
     }
-    .stage::before, .stage::after {
-      position: absolute;
-      width: 250px;
-      height: 250px;
-      border: 1px solid #ffffff0d;
-      border-radius: 50%;
-      content: "";
-    }
-    .stage::after { width: 330px; height: 330px; }
-    .ball {
-      position: relative;
-      z-index: 1;
-      display: grid;
-      width: clamp(160px, 42vw, 220px);
+    .pixel-board {
+      width: clamp(208px, 62vw, 272px);
       aspect-ratio: 1;
-      place-content: center;
-      border: 8px solid #ffffffbd;
-      border-radius: 50%;
-      background: radial-gradient(circle at 34% 26%, #fff 0 5%, var(--ball) 36%, color-mix(in srgb, var(--ball), #111 23%) 100%);
-      box-shadow: 0 14px 35px #0007, inset -12px -18px 28px #0002, inset 8px 9px 22px #ffffff85;
-      color: white;
-      text-shadow: 0 3px 8px #0005;
-      transform: scale(.92);
-      transition: transform .25s ease;
+      border: 8px solid #fff;
+      border-radius: 12px;
+      background-color: #f2ecfc;
+      background-image: linear-gradient(#ded5ee 1px, transparent 1px), linear-gradient(90deg, #ded5ee 1px, transparent 1px);
+      background-size: calc(100% / 16) calc(100% / 16);
+      box-shadow: 0 10px 22px #51406e20, 0 0 0 1px #e9e1f4;
+      image-rendering: pixelated;
     }
-    .ball.has-number { transform: scale(1); }
-    .ball.pop { animation: pop .62s cubic-bezier(.18,.8,.25,1.3); }
-    .letter { font-size: 1.65rem; font-weight: 900; line-height: 1; }
-    .number { font-size: 4.5rem; font-weight: 900; line-height: 1.02; }
-    .placeholder { color: #888ba8; font-size: 1.15rem; font-weight: 700; }
-    @keyframes pop {
-      0% { transform: scale(.3) rotate(-24deg); opacity: .2; }
-      65% { transform: scale(1.12) rotate(5deg); opacity: 1; }
-      100% { transform: scale(1) rotate(0); }
+    canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+    .status {
+      min-height: 26px;
+      margin: 0 0 22px;
+      color: #756795;
+      font-size: .9rem;
+      font-weight: 750;
     }
-    .draw-button {
-      min-width: 220px;
-      min-height: 58px;
-      padding: 12px 30px;
-      border: 0;
-      border-radius: 16px;
-      background: linear-gradient(135deg, #9e74ff, #7049eb);
-      box-shadow: 0 9px 24px #7049eb55;
-      color: white;
-      font: inherit;
-      font-size: 1.15rem;
-      font-weight: 850;
-      cursor: pointer;
-      transition: transform .15s, filter .15s;
-    }
-    .draw-button:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.12); }
-    .draw-button:active:not(:disabled) { transform: translateY(1px); }
-    .draw-button:focus-visible, .reset-button:focus-visible { outline: 3px solid white; outline-offset: 4px; }
-    .draw-button:disabled { cursor: default; opacity: .6; }
-    .status { min-height: 26px; margin: 14px 0 30px; color: #c9c9df; }
-    .history-panel {
-      padding: 22px;
-      border: 1px solid #ffffff18;
-      border-radius: 22px;
-      background: #1b1e30cc;
-      text-align: left;
-    }
-    .history-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-    h2 { margin: 0; font-size: 1.1rem; }
-    .counter { color: #aaaec7; font-size: .9rem; font-variant-numeric: tabular-nums; }
-    .reset-button {
-      padding: 7px 12px;
-      border: 1px solid #ffffff2c;
-      border-radius: 10px;
-      background: transparent;
-      color: #d3d4e5;
-      font: inherit;
-      font-size: .83rem;
-      cursor: pointer;
-    }
-    .history { display: flex; flex-wrap: wrap; gap: 9px; min-height: 38px; margin-top: 18px; }
-    .chip {
+    .picker-heading { margin: 0 0 12px; font-size: .92rem; font-weight: 850; }
+    .expressions { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+    .expression-button {
       display: grid;
-      width: 40px;
-      height: 40px;
+      min-height: 92px;
+      padding: 12px 5px 10px;
       place-items: center;
-      border-radius: 50%;
-      background: var(--ball);
-      box-shadow: inset 0 -4px 8px #0002;
-      color: white;
-      font-size: .76rem;
-      font-weight: 850;
-      animation: chip-in .3s ease both;
+      gap: 5px;
+      border: 2px solid #eee8f6;
+      border-radius: 18px;
+      background: #fff;
+      color: #625778;
+      font: inherit;
+      font-size: .82rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease;
     }
-    @keyframes chip-in { from { opacity: 0; transform: scale(.6); } to { opacity: 1; transform: scale(1); } }
-    .empty-history { align-self: center; color: #8589a4; font-size: .9rem; }
-    footer { margin-top: 22px; color: #777b96; font-size: .82rem; }
+    .expression-button:hover { transform: translateY(-3px); border-color: #d3c4f1; }
+    .expression-button[aria-pressed="true"] {
+      border-color: #9c7ce2;
+      background: #f5f0ff;
+      box-shadow: 0 4px 0 #e5dcf8;
+      color: #6047a0;
+    }
+    .expression-button:focus-visible { outline: 3px solid #7454bf; outline-offset: 3px; }
+    .expression-icon { font-size: 1.65rem; line-height: 1; }
+    .hint { margin: 18px 0 0; color: #a19aac; font-size: .76rem; }
+    @media (max-width: 440px) {
+      body { padding: 16px 10px; }
+      main { padding: 24px 16px; border-radius: 26px; }
+      .pixel-stage { min-height: 290px; }
+      .expressions { gap: 6px; }
+      .expression-button { min-height: 82px; border-radius: 14px; font-size: .74rem; }
+      .expression-icon { font-size: 1.45rem; }
+    }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
     }
@@ -135,102 +119,129 @@
 </head>
 <body>
   <main>
-    <p class="eyebrow">LET'S PLAY TOGETHER</p>
-    <h1>ビンゴ抽選会</h1>
-    <p class="subtitle">ボタンを押して、次の番号を引こう！</p>
+    <p class="eyebrow">16 × 16 PIXEL MOOD</p>
+    <h1>ピクセル気分メーカー</h1>
+    <p class="subtitle">今の気分を、ちいさなドット絵に。</p>
 
-    <section class="stage" aria-label="抽選結果">
-      <div class="ball" id="ball" aria-live="polite" aria-atomic="true">
-        <span class="placeholder" id="placeholder">準備はいい？</span>
+    <section class="pixel-stage" aria-label="選択した表情のドット絵">
+      <div class="pixel-board">
+        <canvas id="face" width="16" height="16" role="img" aria-label="にこにこ顔の16×16ドット絵"></canvas>
       </div>
     </section>
+    <p class="status" id="status" aria-live="polite">にこにこ を選択中</p>
 
-    <button class="draw-button" id="draw" type="button">🎱 抽選する</button>
-    <p class="status" id="status" aria-live="polite">1〜75の番号が、重複なしで出ます。</p>
-
-    <section class="history-panel" aria-labelledby="history-title">
-      <div class="history-heading">
-        <h2 id="history-title">出た番号</h2>
-        <span class="counter" id="counter">0 / 75</span>
-        <button class="reset-button" id="reset" type="button">最初から</button>
-      </div>
-      <div class="history" id="history" aria-label="これまでに出た番号">
-        <span class="empty-history" id="empty">番号はまだありません</span>
-      </div>
-    </section>
-    <footer>番号は1〜75からランダムに選ばれます</footer>
+    <h2 class="picker-heading">表情をえらんでね</h2>
+    <div class="expressions" role="group" aria-label="表情を選択">
+      <button class="expression-button" type="button" data-expression="happy" aria-pressed="true"><span class="expression-icon" aria-hidden="true">😊</span><span>にこにこ</span></button>
+      <button class="expression-button" type="button" data-expression="excited" aria-pressed="false"><span class="expression-icon" aria-hidden="true">🤩</span><span>わくわく</span></button>
+      <button class="expression-button" type="button" data-expression="sad" aria-pressed="false"><span class="expression-icon" aria-hidden="true">😢</span><span>かなしい</span></button>
+      <button class="expression-button" type="button" data-expression="surprised" aria-pressed="false"><span class="expression-icon" aria-hidden="true">😮</span><span>びっくり</span></button>
+      <button class="expression-button" type="button" data-expression="sleepy" aria-pressed="false"><span class="expression-icon" aria-hidden="true">😴</span><span>ねむねむ</span></button>
+    </div>
+    <p class="hint">ボタンを押すと、16×16の表情が切り替わります</p>
   </main>
 
   <script>
-    const colors = ['#fa547c', '#5686ff', '#17b89b', '#a16bfa', '#f4a640'];
-    const letters = ['B', 'I', 'N', 'G', 'O'];
-    let numbers = [];
-    let drawn = [];
-
-    const ball = document.querySelector('#ball');
-    const drawButton = document.querySelector('#draw');
-    const status = document.querySelector('#status');
-    const history = document.querySelector('#history');
-    const counter = document.querySelector('#counter');
-
-    function updateCounter() {
-      counter.textContent = `${drawn.length} / 75`;
-    }
-
-    function drawNumber() {
-      if (drawButton.disabled || numbers.length === 0) return;
-      drawButton.disabled = true;
-      const number = numbers.pop();
-      const column = Math.min(4, Math.floor((number - 1) / 15));
-      const letter = letters[column];
-      const color = colors[column];
-
-      ball.style.setProperty('--ball', color);
-      ball.innerHTML = `<span class="letter">${letter}</span><span class="number">${number}</span>`;
-      ball.classList.add('has-number');
-      ball.classList.remove('pop');
-      void ball.offsetWidth;
-      ball.classList.add('pop');
-      status.textContent = `${letter}の${number}番！`;
-
-      const chip = document.createElement('span');
-      chip.className = 'chip';
-      chip.style.setProperty('--ball', color);
-      chip.textContent = `${letter}${number}`;
-      chip.setAttribute('aria-label', `${letter}の${number}番`);
-      history.querySelector('#empty')?.remove();
-      history.prepend(chip);
-      drawn.push(number);
-      updateCounter();
-
-      window.setTimeout(() => {
-        drawButton.disabled = false;
-        if (numbers.length === 0) {
-          drawButton.disabled = true;
-          status.textContent = '全75球が出ました！おつかれさまでした 🎉';
-        }
-      }, 650);
-    }
-
-    function resetGame() {
-      numbers = Array.from({ length: 75 }, (_, index) => index + 1);
-      for (let i = numbers.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+    const faceShape = [
+      '......ssss......',
+      '....ssssssss....',
+      '...ssssssssss...',
+      '..ssssssssssss..',
+      '.ssssssssssssss.',
+      '.ssssssssssssss.',
+      '.ssssssssssssss.',
+      '.ssssssssssssss.',
+      '.ssssssssssssss.',
+      '.ssssssssssssss.',
+      '..ssssssssssss..',
+      '..ssssssssssss..',
+      '...ssssssssss...',
+      '....ssssssss....',
+      '......ssss......',
+      '................'
+    ];
+    const expressions = {
+      happy: {
+        name: 'にこにこ',
+        eyes: [[ [4, 7], [5, 7], [6, 6] ], [ [9, 6], [10, 7], [11, 7] ]],
+        mouth: [[6, 9], [7, 9], [8, 9], [9, 9], [5, 10], [10, 10], [6, 11], [7, 11], [8, 11], [9, 11]],
+        cheeks: [[3, 9], [4, 10], [11, 10], [12, 9]]
+      },
+      excited: {
+        name: 'わくわく',
+        eyes: [[ [4, 6], [5, 6], [4, 7], [5, 7], [4, 8], [5, 8] ], [ [10, 6], [11, 6], [10, 7], [11, 7], [10, 8], [11, 8] ]],
+        mouth: [[6, 9], [7, 9], [8, 9], [9, 9], [6, 10], [7, 10], [8, 10], [9, 10], [7, 11], [8, 11]],
+        cheeks: [[3, 9], [4, 10], [11, 10], [12, 9]],
+        sparkles: [[2, 4], [13, 4], [2, 5], [13, 5]]
+      },
+      sad: {
+        name: 'かなしい',
+        eyes: [[ [4, 7], [5, 7], [4, 8], [5, 8] ], [ [10, 7], [11, 7], [10, 8], [11, 8] ]],
+        brows: [[4, 5], [5, 6], [10, 6], [11, 5]],
+        mouth: [[6, 10], [7, 9], [8, 9], [9, 10]],
+        tear: [[12, 8], [12, 9], [11, 10]]
+      },
+      surprised: {
+        name: 'びっくり',
+        eyes: [[ [4, 6], [5, 6], [4, 7], [5, 7], [4, 8], [5, 8] ], [ [10, 6], [11, 6], [10, 7], [11, 7], [10, 8], [11, 8] ]],
+        brows: [[4, 5], [5, 5], [10, 5], [11, 5]],
+        mouth: [[7, 9], [8, 9], [6, 10], [9, 10], [6, 11], [9, 11], [7, 12], [8, 12]]
+      },
+      sleepy: {
+        name: 'ねむねむ',
+        eyes: [[ [4, 7], [5, 7], [6, 7] ], [ [9, 7], [10, 7], [11, 7] ]],
+        brows: [[4, 6], [5, 6], [10, 6], [11, 6]],
+        mouth: [[7, 10], [8, 10]],
+        zzz: [[12, 4], [13, 3], [14, 2]]
       }
-      drawn = [];
-      ball.className = 'ball';
-      ball.style.removeProperty('--ball');
-      ball.innerHTML = '<span class="placeholder" id="placeholder">準備はいい？</span>';
-      history.innerHTML = '<span class="empty-history" id="empty">番号はまだありません</span>';
-      drawButton.disabled = false;
-      status.textContent = '1〜75の番号が、重複なしで出ます。';
-      updateCounter();
+    };
+    const colors = {
+      skin: '#ffc879',
+      highlight: '#ffe2a8',
+      outline: '#593e61',
+      cheek: '#f28791',
+      tear: '#63a9ef',
+      sparkle: '#f2a83b'
+    };
+    const canvas = document.querySelector('#face');
+    const context = canvas.getContext('2d');
+    const buttons = [...document.querySelectorAll('.expression-button')];
+    const status = document.querySelector('#status');
+
+    function paintPixels(points, color) {
+      context.fillStyle = color;
+      points.forEach(([x, y]) => context.fillRect(x, y, 1, 1));
     }
 
-    drawButton.addEventListener('click', drawNumber);
-    document.querySelector('#reset').addEventListener('click', resetGame);
-    resetGame();
+    function drawFace(expressionKey) {
+      const expression = expressions[expressionKey];
+      context.clearRect(0, 0, 16, 16);
+      faceShape.forEach((row, y) => {
+        [...row].forEach((pixel, x) => {
+          if (pixel === 's') {
+            context.fillStyle = x < 5 && y < 8 ? colors.highlight : colors.skin;
+            context.fillRect(x, y, 1, 1);
+          }
+        });
+      });
+      expression.cheeks && paintPixels(expression.cheeks, colors.cheek);
+      expression.eyes.forEach((eye) => paintPixels(eye, colors.outline));
+      expression.brows && paintPixels(expression.brows, colors.outline);
+      paintPixels(expression.mouth, colors.outline);
+      expression.tear && paintPixels(expression.tear, colors.tear);
+      expression.sparkles && paintPixels(expression.sparkles, colors.sparkle);
+      expression.zzz && paintPixels(expression.zzz, colors.tear);
+      canvas.setAttribute('aria-label', `${expression.name}の16×16ドット絵`);
+      status.textContent = `${expression.name} を選択中`;
+      buttons.forEach((button) => {
+        button.setAttribute('aria-pressed', String(button.dataset.expression === expressionKey));
+      });
+    }
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => drawFace(button.dataset.expression));
+    });
+    drawFace('happy');
   </script>
 </body>
 </html>
